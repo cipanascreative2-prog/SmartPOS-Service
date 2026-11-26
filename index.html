@@ -159,6 +159,8 @@
             body.printing-a4 #modal-a4-report,
             body.printing-a4 #modal-a4-report * {
                 visibility: visible !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             body.printing-a4 #modal-a4-report {
                 position: fixed !important;
@@ -167,6 +169,22 @@
                 padding: 0 !important;
                 margin: 0 !important;
                 display: block !important;
+                overflow: visible !important;
+            }
+            body.printing-a4 #modal-a4-report > div {
+                max-width: none !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+            body.printing-a4 #a4-printable-area {
+                max-height: none !important;
+                overflow: visible !important;
+                border: none !important;
+                padding: 0 !important;
+                box-shadow: none !important;
             }
             body.printing-a4 .no-print {
                 display: none !important;
@@ -2574,12 +2592,18 @@
     </div>
 
     <!-- 8. A4 Report / Invoice / Faktur Print & PDF Modal -->
-    <div id="modal-a4-report" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-4xl w-full p-6 shadow-2xl space-y-4 my-auto">
-            <div class="no-print flex flex-wrap items-center justify-between gap-2 border-b pb-3">
-                <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-sm">Pratinjau Dokumen / Laporan A4</span>
-                    <select id="a4-report-type" onchange="renderA4ReportContent()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-bold bg-slate-50">
+    <div id="modal-a4-report" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-slate-100 rounded-3xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto border border-white/20">
+            <div class="no-print flex flex-wrap items-center justify-between gap-3 bg-white px-4 py-3 rounded-2xl border border-slate-200/80 shadow-xs">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                        <i data-lucide="file-check-2" class="w-4 h-4"></i>
+                    </span>
+                    <div>
+                        <span class="block font-extrabold text-xs text-slate-900">Pratinjau Dokumen &amp; Invoice A4</span>
+                        <span class="block text-[10px] text-slate-500">Siap cetak printer A4 atau ekspor langsung ke PDF</span>
+                    </div>
+                    <select id="a4-report-type" onchange="renderA4ReportContent()" class="ml-1 px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-bold bg-slate-50 text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500">
                         <option value="sales">Laporan Transaksi Penjualan</option>
                         <option value="sale-invoice">Invoice Penjualan (A4)</option>
                         <option value="purchases">Laporan Transaksi Pembelian</option>
@@ -2589,53 +2613,60 @@
                         <option value="service">Laporan Service</option>
                         <option value="service-invoice">Invoice Nota Service (A4)</option>
                         <option value="stock">Laporan Stock Barang / Aset</option>
-                        <option value="cash">Laporan Posisi Saldo Kas & Bank</option>
+                        <option value="cash">Laporan Posisi Saldo Kas &amp; Bank</option>
                         <option value="cashflow">Laporan Arus Kas (Cash Flow)</option>
                     </select>
                 </div>
-                <div class="flex gap-2">
-                    <button type="button" onclick="downloadCurrentA4PDF()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs">Download PDF</button>
-                    <button type="button" onclick="printA4Report()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs">Cetak Printer A4</button>
-                    <button type="button" onclick="closeModal('modal-a4-report')" class="px-3 py-2 rounded-xl bg-slate-100 font-bold text-xs">Tutup</button>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="downloadCurrentA4PDF()" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> Download PDF
+                    </button>
+                    <button type="button" onclick="printA4Report()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:opacity-95 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-sm transition">
+                        <i data-lucide="printer" class="w-3.5 h-3.5"></i> Cetak A4
+                    </button>
+                    <button type="button" onclick="closeModal('modal-a4-report')" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition">Tutup</button>
                 </div>
             </div>
-            <div id="a4-printable-area" class="bg-white p-6 border rounded-xl text-slate-900 max-h-[72vh] overflow-y-auto"></div>
+            <div class="max-h-[75vh] overflow-y-auto rounded-2xl">
+                <div id="a4-printable-area" class="bg-white p-7 sm:p-9 rounded-2xl border border-slate-200/90 shadow-lg text-slate-900"></div>
+            </div>
         </div>
     </div>
 
-    <!-- 9. Supabase & Store Settings Modals -->
-    <div id="modal-supabase" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+    <!-- 9. Supabase Cloud Config Modal -->
+    <div id="modal-supabase" class="fixed inset-0 z-[85] hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between border-b pb-3">
-                <h3 class="font-extrabold text-base text-slate-900">Koneksi Database Supabase</h3>
-                <button type="button" onclick="closeModal('modal-supabase')" class="text-slate-400">✕</button>
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-base text-slate-900">Konfigurasi Supabase Cloud</h3>
+                <button type="button" onclick="closeModal('modal-supabase')" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
             </div>
             <form onsubmit="saveSupabaseConfig(event)" class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Supabase Project URL</label>
-                    <input type="text" id="sb-url-input" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono">
+                    <label class="block font-bold text-slate-700 mb-1">Supabase Project URL *</label>
+                    <input type="url" id="sb-url-input" required placeholder="https://xxxx.supabase.co" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Publishable / Anon API Key</label>
+                    <label class="block font-bold text-slate-700 mb-1">Supabase Anon / Publishable Key *</label>
                     <input type="text" id="sb-key-input" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Store Key ID</label>
-                    <input type="text" id="sb-store-key-input" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono">
+                    <label class="block font-bold text-slate-700 mb-1">Store Key (ID Toko) *</label>
+                    <input type="text" id="sb-store-key-input" required value="default_store" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold">
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t">
-                    <button type="button" onclick="closeModal('modal-supabase')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 text-white font-bold">Simpan & Hubungkan</button>
+                    <button type="button" onclick="closeModal('modal-supabase')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-700">Batal</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Simpan &amp; Hubungkan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="modal-store-settings" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+    <!-- 10. Store Settings Modal -->
+    <div id="modal-store-settings" class="fixed inset-0 z-[85] hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between border-b pb-3">
-                <h3 class="font-extrabold text-base text-slate-900">Profil & Identitas Toko</h3>
-                <button type="button" onclick="closeModal('modal-store-settings')" class="text-slate-400">✕</button>
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-base text-slate-900">Pengaturan Profil Toko</h3>
+                <button type="button" onclick="closeModal('modal-store-settings')" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
             </div>
             <form onsubmit="saveStoreSettings(event)" class="space-y-3 text-xs">
                 <div>
@@ -2643,45 +2674,41 @@
                     <input type="text" id="set-store-name" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Tagline / Slogan</label>
-                    <input type="text" id="set-store-tagline" class="w-full px-3 py-2 rounded-xl border border-slate-300">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Alamat Lengkap</label>
-                    <input type="text" id="set-store-address" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                    <label class="block font-bold text-slate-700 mb-1">Tagline / Subjudul Struk</label>
+                    <input type="text" id="set-store-tagline" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">No. Telepon / WhatsApp Toko</label>
-                    <input type="text" id="set-store-phone" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                    <input type="text" id="set-store-phone" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Alamat Lengkap Toko</label>
+                    <textarea id="set-store-address" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t">
-                    <button type="button" onclick="closeModal('modal-store-settings')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 text-white font-bold">Simpan Profil</button>
+                    <button type="button" onclick="closeModal('modal-store-settings')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-700">Batal</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold">Simpan Profil Toko</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- 10. Universal Delete Warning Confirmation Modal -->
+    <!-- 11. Universal Delete Confirmation Modal -->
     <div id="modal-confirm-delete" class="fixed inset-0 z-[90] hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-rose-200 space-y-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-rose-100">
             <div class="flex items-start gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
-                    <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <h3 id="confirm-del-title" class="font-extrabold text-base text-slate-900">Peringatan Hapus Data</h3>
-                    <p id="confirm-del-desc" class="text-xs text-slate-600 mt-1">Apakah Anda yakin ingin menghapus data ini?</p>
+                <div>
+                    <h3 id="confirm-del-title" class="font-extrabold text-base text-slate-900">Konfirmasi Hapus</h3>
+                    <p id="confirm-del-desc" class="text-xs text-slate-600 mt-1">Tindakan ini tidak dapat dibatalkan.</p>
                 </div>
             </div>
-            <div id="confirm-del-detail" class="p-3 rounded-xl bg-rose-50/80 border border-rose-200/80 text-xs text-rose-900"></div>
-            <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">
-                <button type="button" onclick="closeModal('modal-confirm-delete')" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition">
-                    Batal
-                </button>
-                <button type="button" onclick="executePendingDelete()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-extrabold text-xs shadow-lg shadow-rose-500/25 flex items-center gap-1.5 transition">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Ya, Hapus Permanen
-                </button>
+            <div id="confirm-del-detail" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-900"></div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button type="button" onclick="closeModal('modal-confirm-delete')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700">Batal</button>
+                <button type="button" onclick="executePendingDelete()" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-sm">Ya, Hapus Sekarang</button>
             </div>
         </div>
     </div>
@@ -2857,6 +2884,7 @@
                     { id: 'kas_3', code: 'KAS-003', name: 'QRIS Merchant', accountType: 'E-Wallet / QRIS', balance: 1250000, accountNumber: 'NMID-9928172' }
                 ],
                 cashMutations: [],
+                receivablePayments: [],
                 sales: [],
                 purchases: [],
                 returns: [],
@@ -2890,6 +2918,7 @@
             merged.customers = merged.customers.map(c => ({ ...c, receivable: Math.max(0, parseNumericValue(c.receivable)) }));
             if (!Array.isArray(merged.cashAccounts) || merged.cashAccounts.length === 0) merged.cashAccounts = def.cashAccounts;
             if (!Array.isArray(merged.cashMutations)) merged.cashMutations = [];
+            if (!Array.isArray(merged.receivablePayments)) merged.receivablePayments = [];
             if (!Array.isArray(merged.sales)) merged.sales = [];
             if (!Array.isArray(merged.purchases)) merged.purchases = [];
             if (!Array.isArray(merged.returns)) merged.returns = [];
@@ -4718,6 +4747,11 @@
             ['sales', 'purchases', 'returns', 'receivables', 'service', 'stock', 'cash'].forEach(sec => {
                 document.getElementById('report-section-' + sec)?.classList.toggle('hidden', sec !== view);
             });
+            // Sembunyikan filter periode tanggal khusus untuk laporan stok saat ini agar tidak membingungkan
+            const periodCtrl = document.getElementById('report-period-controls');
+            if (periodCtrl) {
+                periodCtrl.classList.toggle('hidden', view === 'stock');
+            }
             renderReports();
         }
 
@@ -4732,6 +4766,7 @@
                 return true;
             };
 
+            // 1. Laporan Penjualan
             const sales = (appState.sales || []).filter(s => inRange(s.date));
             const omzet = sales.reduce((a, b) => a + (Number(b.grandTotal) || 0), 0);
             const profit = sales.reduce((a, b) => {
@@ -4754,6 +4789,218 @@
                     </tr>
                 `).join('') || '<tr><td colspan="6" class="text-center py-6 text-slate-400">Tidak ada data penjualan pada periode ini.</td></tr>';
             }
+
+            // 2. Laporan Pembelian
+            const purSupSel = document.getElementById('rep-pur-supplier-filter');
+            if (purSupSel) {
+                const prevSup = purSupSel.value;
+                purSupSel.innerHTML = '<option value="">Semua Supplier</option>' +
+                    (appState.suppliers || []).map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+                purSupSel.value = prevSup;
+            }
+            const purSupFilter = purSupSel?.value || '';
+            const purchases = (appState.purchases || []).filter(p => inRange(p.date) && (!purSupFilter || p.supplierId === purSupFilter));
+            const purTotal = purchases.reduce((a, b) => a + (Number(b.grandTotal) || 0), 0);
+            const purDebt = purchases.reduce((a, b) => a + (Number(b.dueAmount) || 0), 0);
+            if (document.getElementById('rep-pur-total')) document.getElementById('rep-pur-total').textContent = formatRupiah(purTotal);
+            if (document.getElementById('rep-pur-debt')) document.getElementById('rep-pur-debt').textContent = formatRupiah(purDebt);
+            if (document.getElementById('rep-pur-count')) document.getElementById('rep-pur-count').textContent = `${purchases.length} Faktur`;
+            const purBody = document.getElementById('report-purchases-tbody');
+            if (purBody) {
+                purBody.innerHTML = purchases.map(p => `
+                    <tr>
+                        <td class="py-2.5 px-3 font-mono font-bold text-indigo-700">${p.purchaseNo}</td>
+                        <td class="py-2.5 px-3">${formatDateTime(p.date)}</td>
+                        <td class="py-2.5 px-3 font-bold">${p.supplierName || '-'}</td>
+                        <td class="py-2.5 px-3 text-slate-600">${(p.items || []).map(i => `${i.name} (${i.qty})`).join(', ')}</td>
+                        <td class="py-2.5 px-3">${p.paymentMethod}</td>
+                        <td class="py-2.5 px-3 text-right font-extrabold">${formatRupiah(p.grandTotal)}</td>
+                        <td class="py-2.5 px-3 text-center"><button type="button" onclick="openPurchaseInvoiceA4('${p.id}')" class="px-2 py-1 rounded bg-amber-500 text-white font-bold text-[10px]">Faktur A4</button></td>
+                    </tr>
+                `).join('') || '<tr><td colspan="7" class="text-center py-6 text-slate-400">Tidak ada data pembelian pada periode ini.</td></tr>';
+            }
+
+            // 3. Laporan Retur Barang
+            const returns = (appState.returns || []).filter(r => inRange(r.date));
+            const retSaleTotal = returns.filter(r => r.type === 'sale').reduce((a, b) => a + (Number(b.totalAmount) || 0), 0);
+            const retPurTotal = returns.filter(r => r.type === 'purchase').reduce((a, b) => a + (Number(b.totalAmount) || 0), 0);
+            if (document.getElementById('rep-ret-sale-total')) document.getElementById('rep-ret-sale-total').textContent = formatRupiah(retSaleTotal);
+            if (document.getElementById('rep-ret-pur-total')) document.getElementById('rep-ret-pur-total').textContent = formatRupiah(retPurTotal);
+            if (document.getElementById('rep-ret-count')) document.getElementById('rep-ret-count').textContent = `${returns.length} Retur`;
+            const retBody = document.getElementById('report-returns-tbody');
+            if (retBody) {
+                retBody.innerHTML = returns.map(r => `
+                    <tr>
+                        <td class="py-2.5 px-3 font-mono font-bold">${r.returnNo || r.id}</td>
+                        <td class="py-2.5 px-3">${formatDateTime(r.date)}</td>
+                        <td class="py-2.5 px-3">${r.type === 'sale' ? 'Retur Penjualan' : 'Retur Pembelian'} (${r.refNo || '-'})</td>
+                        <td class="py-2.5 px-3 font-bold">${r.partyName || '-'}</td>
+                        <td class="py-2.5 px-3">${r.reason || '-'}</td>
+                        <td class="py-2.5 px-3 text-right font-extrabold text-rose-700">${formatRupiah(r.totalAmount)}</td>
+                    </tr>
+                `).join('') || '<tr><td colspan="6" class="text-center py-6 text-slate-400">Belum ada data retur pada periode ini.</td></tr>';
+            }
+
+            // 4. Laporan Piutang Pelanggan
+            const recCustSel = document.getElementById('rep-rec-customer-filter');
+            if (recCustSel) {
+                const prevCust = recCustSel.value;
+                recCustSel.innerHTML = '<option value="">Semua Pelanggan</option>' +
+                    (appState.customers || []).map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                recCustSel.value = prevCust;
+            }
+            const recCustFilter = recCustSel?.value || '';
+            const recCustomers = (appState.customers || []).filter(c => (!recCustFilter || c.id === recCustFilter) && (Number(c.receivable) || 0) > 0);
+            const totalRecRemaining = recCustomers.reduce((a, c) => a + (Number(c.receivable) || 0), 0);
+            if (document.getElementById('rep-rec-remaining')) document.getElementById('rep-rec-remaining').textContent = formatRupiah(totalRecRemaining);
+            if (document.getElementById('rep-rec-count')) document.getElementById('rep-rec-count').textContent = `${recCustomers.length} Pelanggan`;
+            const recBody = document.getElementById('report-receivables-tbody');
+            if (recBody) {
+                recBody.innerHTML = recCustomers.map(c => `
+                    <tr>
+                        <td class="py-2.5 px-3.5 font-bold text-slate-900">${c.name}</td>
+                        <td class="py-2.5 px-3.5">${c.category || 'Toko'} • ${c.phone || '-'}</td>
+                        <td class="py-2.5 px-3.5">-</td>
+                        <td class="py-2.5 px-3.5 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">Belum Lunas</span></td>
+                        <td class="py-2.5 px-3.5 text-right">Rp 0</td>
+                        <td class="py-2.5 px-3.5 text-right font-extrabold text-rose-700">${formatRupiah(c.receivable)}</td>
+                    </tr>
+                `).join('') || '<tr><td colspan="6" class="text-center py-6 text-slate-400">Tidak ada pelanggan dengan sisa piutang.</td></tr>';
+            }
+
+            // 5. Laporan Service Toko
+            const services = (appState.services || []).filter(s => inRange(s.createdAt));
+            const srvOmzet = services.filter(s => s.isPaid).reduce((a, s) => a + (Number(s.laborCost) || 0) + (s.parts || []).reduce((x, y) => x + ((Number(y.price) || 0) * (Number(y.qty) || 0)), 0), 0);
+            const srvDoneCount = services.filter(s => s.status === 'Selesai' || s.status === 'Diambil').length;
+            if (document.getElementById('rep-srv-omzet')) document.getElementById('rep-srv-omzet').textContent = formatRupiah(srvOmzet);
+            if (document.getElementById('rep-srv-done')) document.getElementById('rep-srv-done').textContent = `${srvDoneCount} Unit`;
+            if (document.getElementById('rep-srv-total')) document.getElementById('rep-srv-total').textContent = `${services.length} Unit`;
+            const srvBody = document.getElementById('report-service-tbody');
+            if (srvBody) {
+                srvBody.innerHTML = services.map(s => {
+                    const tot = (Number(s.laborCost) || 0) + (s.parts || []).reduce((x, y) => x + ((Number(y.price) || 0) * (Number(y.qty) || 0)), 0);
+                    return `
+                        <tr>
+                            <td class="py-2.5 px-3 font-mono font-bold text-purple-700">${s.serviceNo}</td>
+                            <td class="py-2.5 px-3">${formatDateTime(s.createdAt)}</td>
+                            <td class="py-2.5 px-3 font-bold">${s.customerName}</td>
+                            <td class="py-2.5 px-3">${s.device}</td>
+                            <td class="py-2.5 px-3">${s.status} (${s.isPaid ? 'Lunas' : 'Belum'})</td>
+                            <td class="py-2.5 px-3 text-right font-extrabold">${formatRupiah(tot)}</td>
+                        </tr>
+                    `;
+                }).join('') || '<tr><td colspan="6" class="text-center py-6 text-slate-400">Tidak ada data service pada periode ini.</td></tr>';
+            }
+
+            // 6. Laporan Stock Barang & Valuasi Aset (PERBAIKAN UTAMA)
+            const products = appState.products || [];
+            let totalStockModal = 0;
+            let totalStockRetail = 0;
+
+            products.forEach(p => {
+                const stock = Number(p.stock) || 0;
+                const buyPrice = Number(p.buyPrice) || 0;
+                const sellPrice = Number(p.sellPrice) || 0;
+                totalStockModal += stock * buyPrice;
+                totalStockRetail += stock * sellPrice;
+            });
+
+            if (document.getElementById('rep-stock-modal')) {
+                document.getElementById('rep-stock-modal').textContent = formatRupiah(totalStockModal);
+            }
+            if (document.getElementById('rep-stock-retail')) {
+                document.getElementById('rep-stock-retail').textContent = formatRupiah(totalStockRetail);
+            }
+
+            const stockBody = document.getElementById('report-stock-tbody');
+            if (stockBody) {
+                if (products.length === 0) {
+                    stockBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">Belum ada data barang terdaftar.</td></tr>';
+                } else {
+                    const rowsHtml = products.map(p => {
+                        const stock = Number(p.stock) || 0;
+                        const buyPrice = Number(p.buyPrice) || 0;
+                        const sellPrice = Number(p.sellPrice) || 0;
+                        const modalVal = stock * buyPrice;
+                        const retailVal = stock * sellPrice;
+                        const unitLabel = p.sellUnit || 'Pcs';
+                        const badgeClass = stock > 5
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : (stock > 0 ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200');
+                        const sup = (appState.suppliers || []).find(s => s.id === p.supplierId);
+
+                        return `
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-2.5 px-3.5 font-mono font-bold text-slate-700">${p.code || '-'}</td>
+                                <td class="py-2.5 px-3.5">
+                                    <div class="font-bold text-slate-900">${p.name}</div>
+                                    ${sup ? `<div class="text-[10px] text-slate-400">Supplier: ${sup.name}</div>` : ''}
+                                </td>
+                                <td class="py-2.5 px-3.5 text-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border ${badgeClass}">
+                                        ${stock.toLocaleString('id-ID')} ${unitLabel}
+                                    </span>
+                                </td>
+                                <td class="py-2.5 px-3.5 text-right font-semibold text-slate-700">${formatRupiah(buyPrice)}</td>
+                                <td class="py-2.5 px-3.5 text-right font-extrabold text-emerald-700">${formatRupiah(modalVal)}</td>
+                                <td class="py-2.5 px-3.5 text-right font-extrabold text-indigo-700">${formatRupiah(retailVal)}</td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                    const totalUnitCount = products.reduce((a, p) => a + (Number(p.stock) || 0), 0);
+                    const summaryFooterRow = `
+                        <tr class="bg-slate-100 border-t-2 border-slate-300 font-black text-slate-900">
+                            <td colspan="2" class="py-3 px-3.5 text-right uppercase text-[11px] tracking-wider">Total Valuasi (${products.length} Item)</td>
+                            <td class="py-3 px-3.5 text-center text-slate-800">${totalUnitCount.toLocaleString('id-ID')} Unit</td>
+                            <td class="py-3 px-3.5 text-right text-slate-400">-</td>
+                            <td class="py-3 px-3.5 text-right text-emerald-700">${formatRupiah(totalStockModal)}</td>
+                            <td class="py-3 px-3.5 text-right text-indigo-700">${formatRupiah(totalStockRetail)}</td>
+                        </tr>
+                    `;
+                    stockBody.innerHTML = rowsHtml + summaryFooterRow;
+                }
+            }
+
+            // 7. Laporan Saldo Kas & Arus Kas
+            const cashAccounts = appState.cashAccounts || [];
+            const tunaiTotal = cashAccounts.filter(k => (k.accountType || '').toLowerCase().includes('tunai')).reduce((a, b) => a + (Number(b.balance) || 0), 0);
+            const bankTotal = cashAccounts.filter(k => !(k.accountType || '').toLowerCase().includes('tunai')).reduce((a, b) => a + (Number(b.balance) || 0), 0);
+            const grandCash = tunaiTotal + bankTotal;
+            if (document.getElementById('rep-cash-tunai')) document.getElementById('rep-cash-tunai').textContent = formatRupiah(tunaiTotal);
+            if (document.getElementById('rep-cash-bank')) document.getElementById('rep-cash-bank').textContent = formatRupiah(bankTotal);
+            if (document.getElementById('rep-cash-grand')) document.getElementById('rep-cash-grand').textContent = formatRupiah(grandCash);
+            const cashBody = document.getElementById('report-cash-tbody');
+            if (cashBody) {
+                cashBody.innerHTML = cashAccounts.map(k => `
+                    <tr>
+                        <td class="py-2.5 px-3.5 font-mono font-bold">${k.code}</td>
+                        <td class="py-2.5 px-3.5 font-bold text-slate-900">${k.name}</td>
+                        <td class="py-2.5 px-3.5">${k.accountType}</td>
+                        <td class="py-2.5 px-3.5 text-slate-500">${k.accountNumber || '-'}</td>
+                        <td class="py-2.5 px-3.5 text-right font-extrabold text-emerald-700">${formatRupiah(k.balance)}</td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" class="text-center py-6 text-slate-400">Belum ada akun kas.</td></tr>';
+            }
+
+            const mutations = (appState.cashMutations || []).filter(m => inRange(m.date));
+            const cfIn = mutations.filter(m => m.type === 'IN').reduce((a, b) => a + (Number(b.amount) || 0), 0);
+            const cfOut = mutations.filter(m => m.type === 'OUT').reduce((a, b) => a + (Number(b.amount) || 0), 0);
+            if (document.getElementById('rep-cf-in')) document.getElementById('rep-cf-in').textContent = formatRupiah(cfIn);
+            if (document.getElementById('rep-cf-out')) document.getElementById('rep-cf-out').textContent = formatRupiah(cfOut);
+            if (document.getElementById('rep-cf-net')) document.getElementById('rep-cf-net').textContent = formatRupiah(cfIn - cfOut);
+            const cfBody = document.getElementById('report-cashflow-tbody');
+            if (cfBody) {
+                cfBody.innerHTML = mutations.map(m => `
+                    <tr>
+                        <td class="py-2.5 px-3.5">${formatDateTime(m.date)}</td>
+                        <td class="py-2.5 px-3.5">${m.description}</td>
+                        <td class="py-2.5 px-3.5 font-bold">${m.accountName}</td>
+                        <td class="py-2.5 px-3.5 text-right font-bold text-emerald-700">${m.type === 'IN' ? formatRupiah(m.amount) : '-'}</td>
+                        <td class="py-2.5 px-3.5 text-right font-bold text-rose-700">${m.type === 'OUT' ? formatRupiah(m.amount) : '-'}</td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" class="text-center py-6 text-slate-400">Belum ada mutasi arus kas pada periode ini.</td></tr>';
+            }
         }
 
         function openSaleInvoiceA4(saleId) {
@@ -4772,98 +5019,398 @@
             openModal('modal-a4-report');
         }
 
+        function buildModernA4Header({ docTitle, docNumber, docDate, statusLabel, statusTone = 'emerald', accentFrom = '#1e1b4b', accentTo = '#4338ca' }) {
+            const store = appState.store || {};
+            const storeInitials = (store.name || 'SP').trim().split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase() || 'SP';
+            const toneStyles = {
+                emerald: 'background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;',
+                amber: 'background:#fffbeb; color:#b45309; border:1px solid #fde68a;',
+                rose: 'background:#fff1f2; color:#be123c; border:1px solid #fecdd3;',
+                indigo: 'background:#eef2ff; color:#4338ca; border:1px solid #c7d2fe;'
+            };
+            const badgeCss = toneStyles[statusTone] || toneStyles.indigo;
+
+            return `
+                <div style="position:relative; margin-bottom:22px;">
+                    <div style="height:6px; width:100%; border-radius:999px; background:linear-gradient(90deg, ${accentFrom}, ${accentTo}, #06b6d4); margin-bottom:18px;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+                        <div style="display:flex; align-items:flex-start; gap:14px; max-width:58%;">
+                            <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, ${accentFrom}, ${accentTo}); color:#ffffff; font-weight:900; font-size:17px; display:flex; align-items:center; justify-content:center; letter-spacing:0.04em; flex-shrink:0;">
+                                ${storeInitials}
+                            </div>
+                            <div>
+                                <div style="font-size:18px; font-weight:900; color:#0f172a; letter-spacing:-0.02em; line-height:1.2;">${store.name || 'SmartPOS & Service Center'}</div>
+                                ${store.tagline ? `<div style="font-size:11px; font-weight:600; color:#4f46e5; margin-top:2px;">${store.tagline}</div>` : ''}
+                                <div style="font-size:11px; color:#64748b; margin-top:4px; line-height:1.45;">
+                                    ${store.address ? `${store.address}` : ''}
+                                    ${store.phone ? `${store.address ? ' • ' : ''}Telp/WA: <strong>${store.phone}</strong>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align:right; min-width:210px;">
+                            <div style="font-size:20px; font-weight:900; letter-spacing:0.04em; color:#0f172a; text-transform:uppercase; line-height:1.15;">${docTitle}</div>
+                            ${docNumber ? `<div style="display:inline-block; margin-top:6px; padding:4px 10px; border-radius:8px; background:#f1f5f9; border:1px solid #e2e8f0; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; color:#1e293b;">${docNumber}</div>` : ''}
+                            <div style="font-size:11px; color:#64748b; margin-top:6px;">Tanggal: <strong style="color:#1e293b;">${docDate}</strong></div>
+                            ${statusLabel ? `<div style="margin-top:6px;"><span style="display:inline-block; padding:3px 10px; border-radius:999px; font-size:10px; font-weight:800; letter-spacing:0.04em; text-transform:uppercase; ${badgeCss}">${statusLabel}</span></div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function buildModernA4Signatures(leftRole = 'Hormat Kami,', rightRole = 'Penerima / Pelanggan,') {
+            const store = appState.store || {};
+            const cashier = currentUser ? currentUser.name : 'Admin Toko';
+            return `
+                <div style="margin-top:28px; padding-top:16px; border-top:1px dashed #cbd5e1; display:flex; justify-content:space-between; align-items:flex-end; gap:24px; font-size:11px; color:#475569;">
+                    <div style="text-align:center; min-width:170px;">
+                        <div style="font-weight:700; color:#334155;">${leftRole}</div>
+                        <div style="font-size:10px; color:#94a3b8;">${store.name || 'SmartPOS'}</div>
+                        <div style="height:52px;"></div>
+                        <div style="border-top:1px solid #94a3b8; padding-top:4px; font-weight:800; color:#0f172a;">( ${cashier} )</div>
+                    </div>
+                    <div style="text-align:center; font-size:10px; color:#94a3b8; max-width:240px; line-height:1.5;">
+                        Dokumen ini sah dan dicetak secara digital melalui sistem <strong>${store.name || 'SmartPOS'}</strong>.
+                    </div>
+                    <div style="text-align:center; min-width:170px;">
+                        <div style="font-weight:700; color:#334155;">${rightRole}</div>
+                        <div style="font-size:10px; color:#94a3b8;">Tanda Tangan &amp; Nama Terang</div>
+                        <div style="height:52px;"></div>
+                        <div style="border-top:1px solid #94a3b8; padding-top:4px; font-weight:800; color:#0f172a;">( .............................. )</div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderA4ReportContent() {
             const sel = document.getElementById('a4-report-type');
             const area = document.getElementById('a4-printable-area');
             if (!sel || !area || !appState) return;
             const type = sel.value;
             const refId = sel.dataset.refId || '';
-            const store = appState.store || {};
-
-            let header = `
-                <div style="border-bottom:2px solid #0f172a; padding-bottom:10px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                        <div style="font-size:18px; font-weight:900;">${store.name || 'SmartPOS'}</div>
-                        <div style="font-size:11px; color:#475569;">${store.address || ''} ${store.phone ? '• Telp: ' + store.phone : ''}</div>
-                    </div>
-                    <div style="text-align:right; font-size:11px;">
-                        <div style="font-weight:800; text-transform:uppercase;">${type.replace('-', ' ')}</div>
-                        <div>Dicetak: ${formatDateTime(new Date().toISOString())}</div>
-                    </div>
-                </div>
-            `;
 
             if (type === 'sale-invoice') {
                 const sale = (appState.sales || []).find(s => s.id === refId) || (appState.sales || [])[0];
-                if (!sale) { area.innerHTML = header + '<p>Data penjualan tidak ditemukan.</p>'; return; }
+                if (!sale) {
+                    area.innerHTML = buildModernA4Header({ docTitle: 'INVOICE PENJUALAN', docDate: formatDateTime(new Date().toISOString()) }) +
+                        '<div style="padding:32px; text-align:center; color:#64748b; font-size:13px; background:#f8fafc; border-radius:14px; border:1px dashed #cbd5e1;">Belum ada data transaksi penjualan untuk ditampilkan.</div>';
+                    return;
+                }
+                const cust = (appState.customers || []).find(c => c.id === sale.customerId);
+                const isUnpaid = (Number(sale.dueAmount) || 0) > 0 || sale.paymentMethod === 'Piutang';
+                const header = buildModernA4Header({
+                    docTitle: 'INVOICE PENJUALAN',
+                    docNumber: sale.invoiceNo,
+                    docDate: formatDateTime(sale.date),
+                    statusLabel: isUnpaid ? 'BELUM LUNAS / PIUTANG' : 'LUNAS',
+                    statusTone: isUnpaid ? 'rose' : 'emerald',
+                    accentFrom: '#0f172a',
+                    accentTo: '#4f46e5'
+                });
+
                 area.innerHTML = header + `
-                    <div style="margin-bottom:12px; font-size:12px;">
-                        <div><strong>No. Invoice:</strong> ${sale.invoiceNo}</div>
-                        <div><strong>Tanggal:</strong> ${formatDateTime(sale.date)}</div>
-                        <div><strong>Pelanggan:</strong> ${sale.customerName || 'Umum'}</div>
-                        <div><strong>Metode Bayar:</strong> ${sale.paymentMethod}</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; font-size:11.5px;">
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px;">
+                            <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#6366f1; margin-bottom:6px;">Ditagihkan Kepada (Pelanggan)</div>
+                            <div style="font-size:14px; font-weight:900; color:#0f172a;">${sale.customerName || 'Pelanggan Umum'}</div>
+                            ${cust?.category ? `<div style="display:inline-block; margin-top:4px; padding:2px 8px; border-radius:6px; background:#e0e7ff; color:#3730a3; font-size:10px; font-weight:700;">Kategori: ${cust.category}</div>` : ''}
+                            ${cust?.phone ? `<div style="color:#475569; margin-top:5px;">Telp/WA: <strong>${cust.phone}</strong></div>` : ''}
+                            ${cust?.address ? `<div style="color:#64748b; margin-top:2px;">Alamat: ${cust.address}</div>` : ''}
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px;">
+                            <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#6366f1; margin-bottom:6px;">Rincian Pembayaran</div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Metode Bayar</span><strong style="color:#0f172a;">${sale.paymentMethod || 'Tunai'}</strong></div>
+                            ${sale.cashAccountName ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Akun Kas / Bank</span><strong style="color:#0f172a;">${sale.cashAccountName}</strong></div>` : ''}
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Kasir / Admin</span><strong style="color:#0f172a;">${sale.cashierName || '-'}</strong></div>
+                            <div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Total Item</span><strong style="color:#0f172a;">${(sale.items || []).reduce((a, b) => a + (Number(b.qty) || 0), 0)} Qty</strong></div>
+                        </div>
                     </div>
-                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                        <thead>
-                            <tr style="background:#f1f5f9; border-bottom:1px solid #cbd5e1;">
-                                <th style="padding:6px; text-align:left;">Nama Barang</th>
-                                <th style="padding:6px; text-align:center;">Qty</th>
-                                <th style="padding:6px; text-align:right;">Harga</th>
-                                <th style="padding:6px; text-align:right;">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${(sale.items || []).map(it => `
-                                <tr style="border-bottom:1px solid #e2e8f0;">
-                                    <td style="padding:6px;">${it.name}</td>
-                                    <td style="padding:6px; text-align:center;">${it.qty} ${it.unitLabel || 'Pcs'}</td>
-                                    <td style="padding:6px; text-align:right;">${formatRupiah(it.price)}</td>
-                                    <td style="padding:6px; text-align:right; font-weight:700;">${formatRupiah(it.qty * it.price)}</td>
+
+                    <div style="border:1px solid #e2e8f0; border-radius:14px; overflow:hidden; margin-bottom:18px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <thead>
+                                <tr style="background:#0f172a; color:#ffffff; text-transform:uppercase; font-size:10.5px; letter-spacing:0.05em;">
+                                    <th style="padding:10px 12px; text-align:center; width:42px;">No</th>
+                                    <th style="padding:10px 12px; text-align:left;">Deskripsi Barang / Produk</th>
+                                    <th style="padding:10px 12px; text-align:center; width:100px;">Qty</th>
+                                    <th style="padding:10px 12px; text-align:right; width:130px;">Harga Satuan</th>
+                                    <th style="padding:10px 12px; text-align:right; width:140px;">Subtotal</th>
                                 </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div style="margin-top:12px; text-align:right; font-size:13px;">
-                        <div>Subtotal: ${formatRupiah(sale.subtotal)}</div>
-                        ${Number(sale.discount) > 0 ? `<div>Diskon: -${formatRupiah(sale.discount)}</div>` : ''}
-                        <div style="font-size:16px; font-weight:900; margin-top:4px;">GRAND TOTAL: ${formatRupiah(sale.grandTotal)}</div>
+                            </thead>
+                            <tbody>
+                                ${(sale.items || []).map((it, idx) => {
+                                    const rowBg = idx % 2 === 1 ? '#f8fafc' : '#ffffff';
+                                    return `
+                                        <tr style="background:${rowBg}; border-bottom:1px solid #e2e8f0;">
+                                            <td style="padding:10px 12px; text-align:center; color:#64748b; font-weight:700;">${idx + 1}</td>
+                                            <td style="padding:10px 12px;">
+                                                <div style="font-weight:800; color:#0f172a;">${it.name}</div>
+                                                ${it.code ? `<div style="font-size:10px; font-family:'JetBrains Mono', monospace; color:#64748b;">Kode: ${it.code}</div>` : ''}
+                                            </td>
+                                            <td style="padding:10px 12px; text-align:center; font-weight:700; color:#1e293b;">${it.qty} ${it.unitLabel || 'Pcs'}</td>
+                                            <td style="padding:10px 12px; text-align:right; color:#334155;">${formatRupiah(it.price)}</td>
+                                            <td style="padding:10px 12px; text-align:right; font-weight:800; color:#0f172a;">${formatRupiah((Number(it.qty) || 0) * (Number(it.price) || 0))}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
                     </div>
-                `;
+
+                    <div style="display:grid; grid-template-columns:1.1fr 0.9fr; gap:16px; align-items:start;">
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; font-size:11px; color:#475569; line-height:1.55;">
+                            <div style="font-weight:800; color:#0f172a; margin-bottom:4px; text-transform:uppercase; font-size:10px; letter-spacing:0.05em;">Catatan &amp; Ketentuan</div>
+                            <div>• Barang yang sudah dibeli harap diperiksa kembali kelengkapannya.</div>
+                            <div>• Simpan invoice ini sebagai bukti transaksi &amp; klaim garansi yang sah.</div>
+                            <div style="margin-top:6px; font-weight:700; color:#4f46e5;">Terima kasih telah berbelanja di ${appState.store?.name || 'toko kami'}!</div>
+                        </div>
+
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; font-size:12px;">
+                            <div style="display:flex; justify-content:space-between; padding:4px 0; color:#475569;">
+                                <span>Subtotal</span>
+                                <strong style="color:#0f172a;">${formatRupiah(sale.subtotal)}</strong>
+                            </div>
+                            ${Number(sale.discount) > 0 ? `
+                            <div style="display:flex; justify-content:space-between; padding:4px 0; color:#e11d48;">
+                                <span>Diskon</span>
+                                <strong>-${formatRupiah(sale.discount)}</strong>
+                            </div>` : ''}
+                            <div style="margin-top:8px; padding:12px 14px; border-radius:12px; background:linear-gradient(135deg, #0f172a, #312e81); color:#ffffff; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;">Grand Total</span>
+                                <span style="font-size:17px; font-weight:900;">${formatRupiah(sale.grandTotal)}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; padding:8px 2px 2px; font-size:11.5px; color:#475569;">
+                                <span>Jumlah Dibayar</span>
+                                <strong style="color:#059669;">${formatRupiah(sale.paidAmount ?? sale.cashPaid)}</strong>
+                            </div>
+                            ${Number(sale.change) > 0 ? `
+                            <div style="display:flex; justify-content:space-between; padding:2px; font-size:11.5px; color:#475569;">
+                                <span>Kembalian</span>
+                                <strong style="color:#0f172a;">${formatRupiah(sale.change)}</strong>
+                            </div>` : ''}
+                            ${isUnpaid ? `
+                            <div style="display:flex; justify-content:space-between; padding:4px 8px; margin-top:4px; border-radius:8px; background:#fff1f2; color:#be123c; font-size:11.5px; font-weight:800;">
+                                <span>Sisa Piutang</span>
+                                <span>${formatRupiah(sale.dueAmount)}</span>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                ` + buildModernA4Signatures('Hormat Kami,', 'Penerima / Pelanggan,');
             } else if (type === 'purchase-invoice') {
                 const pur = (appState.purchases || []).find(p => p.id === refId) || (appState.purchases || [])[0];
-                if (!pur) { area.innerHTML = header + '<p>Data faktur pembelian tidak ditemukan.</p>'; return; }
+                if (!pur) {
+                    area.innerHTML = buildModernA4Header({ docTitle: 'FAKTUR PEMBELIAN', docDate: formatDateTime(new Date().toISOString()), accentFrom: '#3b0764', accentTo: '#7e22ce' }) +
+                        '<div style="padding:32px; text-align:center; color:#64748b; font-size:13px; background:#f8fafc; border-radius:14px; border:1px dashed #cbd5e1;">Belum ada data faktur pembelian untuk ditampilkan.</div>';
+                    return;
+                }
+                const sup = (appState.suppliers || []).find(s => s.id === pur.supplierId);
+                const isDebt = (Number(pur.dueAmount) || 0) > 0 || pur.paymentMethod === 'Hutang';
+                const header = buildModernA4Header({
+                    docTitle: 'FAKTUR PEMBELIAN',
+                    docNumber: pur.purchaseNo,
+                    docDate: formatDateTime(pur.date),
+                    statusLabel: isDebt ? 'HUTANG SUPPLIER (TEMPO)' : 'LUNAS',
+                    statusTone: isDebt ? 'amber' : 'emerald',
+                    accentFrom: '#3b0764',
+                    accentTo: '#7e22ce'
+                });
+
                 area.innerHTML = header + `
-                    <div style="margin-bottom:12px; font-size:12px;">
-                        <div><strong>No. Faktur:</strong> ${pur.purchaseNo}</div>
-                        <div><strong>Tanggal:</strong> ${formatDateTime(pur.date)}</div>
-                        <div><strong>Supplier:</strong> ${pur.supplierName}</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; font-size:11.5px;">
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px;">
+                            <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#7e22ce; margin-bottom:6px;">Supplier / Distributor</div>
+                            <div style="font-size:14px; font-weight:900; color:#0f172a;">${pur.supplierName || '-'}</div>
+                            ${sup?.contact ? `<div style="color:#475569; margin-top:4px;">PIC / Sales: <strong>${sup.contact}</strong></div>` : ''}
+                            ${sup?.phone ? `<div style="color:#475569; margin-top:2px;">Telp/WA: <strong>${sup.phone}</strong></div>` : ''}
+                            ${sup?.address ? `<div style="color:#64748b; margin-top:2px;">Alamat: ${sup.address}</div>` : ''}
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px;">
+                            <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#7e22ce; margin-bottom:6px;">Detail Pembayaran Faktur</div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Metode Pembayaran</span><strong style="color:#0f172a;">${pur.paymentMethod}</strong></div>
+                            ${pur.cashAccountName ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Sumber Kas / Bank</span><strong style="color:#0f172a;">${pur.cashAccountName}</strong></div>` : ''}
+                            <div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Catatan</span><strong style="color:#0f172a;">${pur.note || '-'}</strong></div>
+                        </div>
                     </div>
-                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                        <thead>
-                            <tr style="background:#f1f5f9; border-bottom:1px solid #cbd5e1;">
-                                <th style="padding:6px; text-align:left;">Barang</th>
-                                <th style="padding:6px; text-align:center;">Qty</th>
-                                <th style="padding:6px; text-align:right;">Harga Beli</th>
-                                <th style="padding:6px; text-align:right;">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${(pur.items || []).map(it => `
-                                <tr style="border-bottom:1px solid #e2e8f0;">
-                                    <td style="padding:6px;">${it.name}</td>
-                                    <td style="padding:6px; text-align:center;">${it.qty} ${it.unit || 'Pcs'}</td>
-                                    <td style="padding:6px; text-align:right;">${formatRupiah(it.price)}</td>
-                                    <td style="padding:6px; text-align:right; font-weight:700;">${formatRupiah(it.qty * it.price)}</td>
+
+                    <div style="border:1px solid #e2e8f0; border-radius:14px; overflow:hidden; margin-bottom:18px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <thead>
+                                <tr style="background:#3b0764; color:#ffffff; text-transform:uppercase; font-size:10.5px; letter-spacing:0.05em;">
+                                    <th style="padding:10px 12px; text-align:center; width:42px;">No</th>
+                                    <th style="padding:10px 12px; text-align:left;">Nama Barang Masuk</th>
+                                    <th style="padding:10px 12px; text-align:center; width:100px;">Qty</th>
+                                    <th style="padding:10px 12px; text-align:right; width:130px;">Harga Beli</th>
+                                    <th style="padding:10px 12px; text-align:right; width:140px;">Subtotal</th>
                                 </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div style="margin-top:12px; text-align:right; font-size:15px; font-weight:900;">
-                        TOTAL PEMBELIAN: ${formatRupiah(pur.grandTotal)}
+                            </thead>
+                            <tbody>
+                                ${(pur.items || []).map((it, idx) => `
+                                    <tr style="background:${idx % 2 === 1 ? '#f8fafc' : '#ffffff'}; border-bottom:1px solid #e2e8f0;">
+                                        <td style="padding:10px 12px; text-align:center; color:#64748b; font-weight:700;">${idx + 1}</td>
+                                        <td style="padding:10px 12px; font-weight:800; color:#0f172a;">${it.name} <span style="font-size:10px; font-family:'JetBrains Mono', monospace; color:#64748b;">(${it.code || '-'})</span></td>
+                                        <td style="padding:10px 12px; text-align:center; font-weight:700;">${it.qty} ${it.unit || 'Pcs'}</td>
+                                        <td style="padding:10px 12px; text-align:right;">${formatRupiah(it.price)}</td>
+                                        <td style="padding:10px 12px; text-align:right; font-weight:800; color:#0f172a;">${formatRupiah((Number(it.qty) || 0) * (Number(it.price) || 0))}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
                     </div>
-                `;
+
+                    <div style="display:flex; justify-content:flex-end;">
+                        <div style="width:320px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; font-size:12px;">
+                            <div style="display:flex; justify-content:space-between; padding:4px 0; color:#475569;"><span>Subtotal</span><strong>${formatRupiah(pur.subtotal)}</strong></div>
+                            ${Number(pur.discount) > 0 ? `<div style="display:flex; justify-content:space-between; padding:4px 0; color:#e11d48;"><span>Diskon</span><strong>-${formatRupiah(pur.discount)}</strong></div>` : ''}
+                            <div style="margin-top:8px; padding:12px 14px; border-radius:12px; background:linear-gradient(135deg, #3b0764, #6b21a8); color:#ffffff; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; font-weight:800; text-transform:uppercase;">Total Pembelian</span>
+                                <span style="font-size:17px; font-weight:900;">${formatRupiah(pur.grandTotal)}</span>
+                            </div>
+                        </div>
+                    </div>
+                ` + buildModernA4Signatures('Bagian Pembelian / Gudang,', 'Pihak Supplier,');
+            } else if (type === 'service-invoice') {
+                const srv = (appState.services || []).find(s => s.id === refId) || (appState.services || [])[0];
+                if (!srv) {
+                    area.innerHTML = buildModernA4Header({ docTitle: 'INVOICE SERVICE', docDate: formatDateTime(new Date().toISOString()), accentFrom: '#1e1b4b', accentTo: '#9333ea' }) +
+                        '<div style="padding:32px; text-align:center; color:#64748b; font-size:13px; background:#f8fafc; border-radius:14px; border:1px dashed #cbd5e1;">Belum ada data service untuk ditampilkan.</div>';
+                    return;
+                }
+                const partsTotal = (srv.parts || []).reduce((a, b) => a + ((Number(b.price) || 0) * (Number(b.qty) || 0)), 0);
+                const grandTotal = (Number(srv.laborCost) || 0) + partsTotal;
+                const header = buildModernA4Header({
+                    docTitle: 'INVOICE SERVICE',
+                    docNumber: srv.serviceNo,
+                    docDate: formatDateTime(srv.createdAt),
+                    statusLabel: `${srv.status} • ${srv.isPaid ? 'LUNAS' : 'BELUM LUNAS'}`,
+                    statusTone: srv.isPaid ? 'emerald' : 'amber',
+                    accentFrom: '#1e1b4b',
+                    accentTo: '#9333ea'
+                });
+
+                area.innerHTML = header + `
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; font-size:11.5px;">
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px;">
+                            <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#9333ea; margin-bottom:6px;">Data Pelanggan</div>
+                            <div style="font-size:14px; font-weight:900; color:#0f172a;">${srv.customerName}</div>
+                            <div style="color:#475569; margin-top:4px;">No. WhatsApp / Telp: <strong>${srv.customerPhone || '-'}</strong></div>
+                            <div style="color:#475569; margin-top:2px;">Teknisi Penanggung Jawab: <strong>${srv.technician || '-'}</strong></div>
+                            <div style="color:#475569; margin-top:2px;">Masa Garansi: <strong>${srv.warranty || 'Tanpa Garansi'}</strong></div>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px;">
+                            <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#9333ea; margin-bottom:6px;">Detail Unit &amp; Keluhan</div>
+                            <div style="font-size:13px; font-weight:800; color:#0f172a;">${srv.device}</div>
+                            <div style="color:#475569; margin-top:4px;">Kelengkapan: <strong>${srv.accessories || 'Unit saja'}</strong></div>
+                            <div style="color:#475569; margin-top:2px;">Keluhan / Tindakan: <strong>${srv.complaint}</strong></div>
+                        </div>
+                    </div>
+
+                    <div style="border:1px solid #e2e8f0; border-radius:14px; overflow:hidden; margin-bottom:18px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <thead>
+                                <tr style="background:#1e1b4b; color:#ffffff; text-transform:uppercase; font-size:10.5px; letter-spacing:0.05em;">
+                                    <th style="padding:10px 12px; text-align:center; width:42px;">No</th>
+                                    <th style="padding:10px 12px; text-align:left;">Rincian Jasa &amp; Penggantian Sparepart</th>
+                                    <th style="padding:10px 12px; text-align:center; width:90px;">Qty</th>
+                                    <th style="padding:10px 12px; text-align:right; width:130px;">Biaya Satuan</th>
+                                    <th style="padding:10px 12px; text-align:right; width:140px;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#ffffff; border-bottom:1px solid #e2e8f0;">
+                                    <td style="padding:10px 12px; text-align:center; color:#64748b; font-weight:700;">1</td>
+                                    <td style="padding:10px 12px; font-weight:800; color:#0f172a;">${srv.laborDesc || 'Biaya Jasa Service / Perbaikan'}</td>
+                                    <td style="padding:10px 12px; text-align:center; font-weight:700;">1 Jasa</td>
+                                    <td style="padding:10px 12px; text-align:right;">${formatRupiah(srv.laborCost)}</td>
+                                    <td style="padding:10px 12px; text-align:right; font-weight:800; color:#0f172a;">${formatRupiah(srv.laborCost)}</td>
+                                </tr>
+                                ${(srv.parts || []).map((p, idx) => `
+                                    <tr style="background:${(idx + 1) % 2 === 1 ? '#f8fafc' : '#ffffff'}; border-bottom:1px solid #e2e8f0;">
+                                        <td style="padding:10px 12px; text-align:center; color:#64748b; font-weight:700;">${idx + 2}</td>
+                                        <td style="padding:10px 12px; font-weight:700; color:#0f172a;">Sparepart: ${p.name}</td>
+                                        <td style="padding:10px 12px; text-align:center; font-weight:700;">${p.qty} Pcs</td>
+                                        <td style="padding:10px 12px; text-align:right;">${formatRupiah(p.price)}</td>
+                                        <td style="padding:10px 12px; text-align:right; font-weight:800; color:#0f172a;">${formatRupiah((Number(p.price) || 0) * (Number(p.qty) || 0))}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1.15fr 0.85fr; gap:16px; align-items:start;">
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; font-size:11px; color:#475569; line-height:1.55;">
+                            <div style="font-weight:800; color:#0f172a; margin-bottom:4px; text-transform:uppercase; font-size:10px; letter-spacing:0.05em;">Syarat &amp; Ketentuan Service</div>
+                            <div>${srv.terms || 'Barang tidak diambil >30 hari bukan tanggung jawab toko. Garansi berlaku sesuai kerusakan yang sama dengan segel utuh.'}</div>
+                        </div>
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; font-size:12px;">
+                            <div style="display:flex; justify-content:space-between; padding:4px 0; color:#475569;"><span>Biaya Jasa</span><strong>${formatRupiah(srv.laborCost)}</strong></div>
+                            <div style="display:flex; justify-content:space-between; padding:4px 0; color:#475569;"><span>Total Sparepart</span><strong>${formatRupiah(partsTotal)}</strong></div>
+                            <div style="margin-top:8px; padding:12px 14px; border-radius:12px; background:linear-gradient(135deg, #1e1b4b, #7e22ce); color:#ffffff; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; font-weight:800; text-transform:uppercase;">Total Biaya</span>
+                                <span style="font-size:17px; font-weight:900;">${formatRupiah(grandTotal)}</span>
+                            </div>
+                        </div>
+                    </div>
+                ` + buildModernA4Signatures('Teknisi / Admin Service,', 'Pemilik Unit / Pelanggan,');
             } else {
-                area.innerHTML = header + `<p style="font-size:12px;">Dokumen laporan siap dicetak atau diunduh ke PDF.</p>`;
+                const titlesMap = {
+                    sales: 'LAPORAN TRANSAKSI PENJUALAN',
+                    purchases: 'LAPORAN TRANSAKSI PEMBELIAN',
+                    returns: 'LAPORAN RETUR BARANG',
+                    receivables: 'LAPORAN PIUTANG PELANGGAN',
+                    service: 'LAPORAN SERVICE TOKO',
+                    stock: 'LAPORAN STOCK & ASET BARANG',
+                    cash: 'LAPORAN POSISI SALDO KAS & BANK',
+                    cashflow: 'LAPORAN ARUS KAS (CASH FLOW)'
+                };
+                const start = document.getElementById('rep-date-start')?.value || 'Awal';
+                const end = document.getElementById('rep-date-end')?.value || 'Hari Ini';
+                const header = buildModernA4Header({
+                    docTitle: titlesMap[type] || 'LAPORAN REKAPITULASI',
+                    docNumber: `PERIODE: ${start} s/d ${end}`,
+                    docDate: formatDateTime(new Date().toISOString()),
+                    statusLabel: 'DOKUMEN RESMI',
+                    statusTone: 'indigo'
+                });
+
+                let tableHtml = '';
+                if (type === 'sales') {
+                    const rows = appState.sales || [];
+                    const total = rows.reduce((a, b) => a + (Number(b.grandTotal) || 0), 0);
+                    tableHtml = `
+                        <table style="width:100%; border-collapse:collapse; font-size:11.5px; border:1px solid #e2e8f0;">
+                            <thead><tr style="background:#0f172a; color:#fff;"><th style="padding:8px; text-align:left;">No. Nota</th><th style="padding:8px; text-align:left;">Tanggal</th><th style="padding:8px; text-align:left;">Pelanggan</th><th style="padding:8px; text-align:left;">Metode</th><th style="padding:8px; text-align:right;">Grand Total</th></tr></thead>
+                            <tbody>${rows.map((s, i) => `<tr style="background:${i % 2 ? '#f8fafc' : '#fff'}; border-bottom:1px solid #e2e8f0;"><td style="padding:8px; font-family:monospace; font-weight:700;">${s.invoiceNo}</td><td style="padding:8px;">${formatDateTime(s.date)}</td><td style="padding:8px;">${s.customerName || 'Umum'}</td><td style="padding:8px;">${s.paymentMethod}</td><td style="padding:8px; text-align:right; font-weight:800;">${formatRupiah(s.grandTotal)}</td></tr>`).join('')}</tbody>
+                            <tfoot><tr style="background:#eef2ff; font-weight:900;"><td colspan="4" style="padding:10px; text-align:right;">TOTAL OMZET PENJUALAN</td><td style="padding:10px; text-align:right; color:#312e81;">${formatRupiah(total)}</td></tr></tfoot>
+                        </table>`;
+                } else if (type === 'stock') {
+                    const rows = appState.products || [];
+                    const totalModal = rows.reduce((a, p) => a + ((Number(p.buyPrice) || 0) * (Number(p.stock) || 0)), 0);
+                    const totalRetail = rows.reduce((a, p) => a + ((Number(p.sellPrice) || 0) * (Number(p.stock) || 0)), 0);
+                    tableHtml = `
+                        <table style="width:100%; border-collapse:collapse; font-size:11.5px; border:1px solid #e2e8f0;">
+                            <thead><tr style="background:#0f172a; color:#fff;"><th style="padding:8px; text-align:left;">Kode</th><th style="padding:8px; text-align:left;">Nama Barang</th><th style="padding:8px; text-align:center;">Stok</th><th style="padding:8px; text-align:right;">Harga Beli</th><th style="padding:8px; text-align:right;">Nilai Aset Modal</th><th style="padding:8px; text-align:right;">Potensi Jual</th></tr></thead>
+                            <tbody>${rows.map((p, i) => {
+                                const stk = Number(p.stock) || 0;
+                                const buy = Number(p.buyPrice) || 0;
+                                const sell = Number(p.sellPrice) || 0;
+                                return `<tr style="background:${i % 2 ? '#f8fafc' : '#fff'}; border-bottom:1px solid #e2e8f0;"><td style="padding:8px; font-family:monospace;">${p.code}</td><td style="padding:8px; font-weight:700;">${p.name}</td><td style="padding:8px; text-align:center;">${stk} ${p.sellUnit || 'Pcs'}</td><td style="padding:8px; text-align:right;">${formatRupiah(buy)}</td><td style="padding:8px; text-align:right; font-weight:800;">${formatRupiah(buy * stk)}</td><td style="padding:8px; text-align:right; font-weight:800; color:#3730a3;">${formatRupiah(sell * stk)}</td></tr>`;
+                            }).join('')}</tbody>
+                            <tfoot><tr style="background:#ecfdf5; font-weight:900;"><td colspan="4" style="padding:10px; text-align:right;">TOTAL NILAI MODAL &amp; POTENSI JUAL</td><td style="padding:10px; text-align:right; color:#047857;">${formatRupiah(totalModal)}</td><td style="padding:10px; text-align:right; color:#312e81;">${formatRupiah(totalRetail)}</td></tr></tfoot>
+                        </table>`;
+                } else if (type === 'cash' || type === 'cashflow') {
+                    const rows = appState.cashAccounts || [];
+                    const totalCash = rows.reduce((a, k) => a + (Number(k.balance) || 0), 0);
+                    tableHtml = `
+                        <table style="width:100%; border-collapse:collapse; font-size:11.5px; border:1px solid #e2e8f0;">
+                            <thead><tr style="background:#0f172a; color:#fff;"><th style="padding:8px; text-align:left;">Kode</th><th style="padding:8px; text-align:left;">Nama Akun Kas / Bank</th><th style="padding:8px; text-align:left;">Jenis</th><th style="padding:8px; text-align:right;">Saldo Saat Ini</th></tr></thead>
+                            <tbody>${rows.map((k, i) => `<tr style="background:${i % 2 ? '#f8fafc' : '#fff'}; border-bottom:1px solid #e2e8f0;"><td style="padding:8px; font-family:monospace;">${k.code}</td><td style="padding:8px; font-weight:700;">${k.name}</td><td style="padding:8px;">${k.accountType}</td><td style="padding:8px; text-align:right; font-weight:800;">${formatRupiah(k.balance)}</td></tr>`).join('')}</tbody>
+                            <tfoot><tr style="background:#ecfdf5; font-weight:900;"><td colspan="3" style="padding:10px; text-align:right;">GRAND TOTAL SALDO LIKUIDITAS</td><td style="padding:10px; text-align:right; color:#047857;">${formatRupiah(totalCash)}</td></tr></tfoot>
+                        </table>`;
+                } else {
+                    tableHtml = `<div style="padding:20px; border-radius:14px; background:#f8fafc; border:1px solid #e2e8f0; font-size:12px; color:#334155;">Dokumen <strong>${titlesMap[type] || 'Laporan'}</strong> siap dicetak atau diunduh ke PDF.</div>`;
+                }
+
+                area.innerHTML = header + tableHtml + buildModernA4Signatures('Dibuat Oleh,', 'Mengetahui / Owner,');
             }
         }
 
@@ -4911,30 +5458,743 @@
             downloadCSVFile('laporan-penjualan.csv', rows);
         }
 
-        // Stubs for secondary views so all navigation works cleanly without errors
-        function switchReturnType(t) { activeReturnType = t; }
-        function renderReturnsHistory() {}
-        function renderReceivablesPage() {}
-        function renderPayablesPage() {}
-        function renderRemoveSummary() {}
+        function exportPurchasesCSV() {
+            const rows = [['No. Faktur', 'Tanggal', 'Supplier', 'Metode', 'Grand Total']];
+            (appState.purchases || []).forEach(p => rows.push([p.purchaseNo, p.date, `"${p.supplierName || '-'}"`, p.paymentMethod, p.grandTotal]));
+            downloadCSVFile('laporan-pembelian.csv', rows);
+        }
 
+        function exportReturnsCSV() {
+            const rows = [['No. Retur', 'Tanggal', 'Jenis', 'Pihak', 'Alasan', 'Total']];
+            (appState.returns || []).forEach(r => rows.push([r.returnNo || r.id, r.date, r.type, `"${r.partyName || '-'}"`, `"${r.reason || '-'}"`, r.totalAmount]));
+            downloadCSVFile('laporan-retur.csv', rows);
+        }
+
+        function exportReceivablesCSV() {
+            const rows = [['Nama Pelanggan', 'Kategori', 'No HP', 'Sisa Piutang']];
+            (appState.customers || []).filter(c => (Number(c.receivable) || 0) > 0).forEach(c => rows.push([`"${c.name}"`, c.category || 'Toko', c.phone || '-', c.receivable]));
+            downloadCSVFile('laporan-piutang.csv', rows);
+        }
+
+        function exportServiceCSV() {
+            const rows = [['No. Service', 'Tanggal', 'Pelanggan', 'Perangkat', 'Status', 'Lunas', 'Total Biaya']];
+            (appState.services || []).forEach(s => {
+                const tot = (Number(s.laborCost) || 0) + (s.parts || []).reduce((x, y) => x + ((Number(y.price) || 0) * (Number(y.qty) || 0)), 0);
+                rows.push([s.serviceNo, s.createdAt, `"${s.customerName}"`, `"${s.device}"`, s.status, s.isPaid ? 'Lunas' : 'Belum', tot]);
+            });
+            downloadCSVFile('laporan-service.csv', rows);
+        }
+
+        function exportStockAssetCSV() {
+            const rows = [['Kode', 'Nama Barang', 'Stok', 'Satuan', 'Harga Beli', 'Harga Jual Ecer', 'Total Nilai Modal', 'Potensi Nilai Jual']];
+            (appState.products || []).forEach(p => {
+                const stk = Number(p.stock) || 0;
+                const buy = Number(p.buyPrice) || 0;
+                const sell = Number(p.sellPrice) || 0;
+                rows.push([
+                    p.code || '',
+                    `"${(p.name || '').replace(/"/g, '""')}"`,
+                    stk,
+                    p.sellUnit || 'Pcs',
+                    buy,
+                    sell,
+                    stk * buy,
+                    stk * sell
+                ]);
+            });
+            downloadCSVFile('laporan-stok-aset.csv', rows);
+        }
+
+        function exportCashFlowCSV() {
+            const rows = [['Tanggal', 'Akun Kas', 'Jenis', 'Keterangan', 'Nominal']];
+            (appState.cashMutations || []).forEach(m => rows.push([m.date, `"${m.accountName}"`, m.type, `"${m.description}"`, m.amount]));
+            downloadCSVFile('laporan-arus-kas.csv', rows);
+        }
+
+        // ==================== RETUR BARANG (PENJUALAN & PEMBELIAN) ====================
+        function switchReturnType(type) {
+            activeReturnType = type === 'purchase' ? 'purchase' : 'sale';
+            const btnSale = document.getElementById('btn-ret-type-sale');
+            const btnPur = document.getElementById('btn-ret-type-purchase');
+            const lblRef = document.getElementById('lbl-ret-ref-select');
+            if (btnSale && btnPur) {
+                btnSale.className = activeReturnType === 'sale'
+                    ? 'py-2.5 px-3 rounded-xl bg-indigo-600 text-white shadow-xs transition'
+                    : 'py-2.5 px-3 rounded-xl text-slate-700 hover:bg-white/70 transition';
+                btnPur.className = activeReturnType === 'purchase'
+                    ? 'py-2.5 px-3 rounded-xl bg-indigo-600 text-white shadow-xs transition'
+                    : 'py-2.5 px-3 rounded-xl text-slate-700 hover:bg-white/70 transition';
+            }
+            if (lblRef) {
+                lblRef.textContent = activeReturnType === 'sale' ? 'Pilih Nota Penjualan *' : 'Pilih Faktur Pembelian *';
+            }
+            populateReturnSelectors();
+        }
+
+        function populateReturnSelectors() {
+            if (!appState) return;
+            const refSel = document.getElementById('ret-ref-select');
+            if (refSel) {
+                if (activeReturnType === 'sale') {
+                    refSel.innerHTML = '<option value="">-- Pilih Nota Penjualan --</option>' +
+                        (appState.sales || []).map(s => `<option value="${s.id}">${s.invoiceNo} — ${s.customerName || 'Umum'} (${formatRupiah(s.grandTotal)})</option>`).join('');
+                } else {
+                    refSel.innerHTML = '<option value="">-- Pilih Faktur Pembelian --</option>' +
+                        (appState.purchases || []).map(p => `<option value="${p.id}">${p.purchaseNo} — ${p.supplierName || '-'} (${formatRupiah(p.grandTotal)})</option>`).join('');
+                }
+            }
+            const cashSel = document.getElementById('ret-cash-account');
+            if (cashSel) {
+                cashSel.innerHTML = (appState.cashAccounts || []).map(k => `<option value="${k.id}">${k.name} (${formatRupiah(k.balance)})</option>`).join('');
+            }
+            handleReturnRefChange();
+            handleReturnSettlementChange();
+        }
+
+        function handleReturnSettlementChange() {
+            const mode = document.getElementById('ret-settlement-mode')?.value || 'cash';
+            const wrap = document.getElementById('ret-cash-account-wrapper');
+            if (wrap) wrap.classList.toggle('hidden', mode !== 'cash');
+        }
+
+        function handleReturnRefChange() {
+            const refId = document.getElementById('ret-ref-select')?.value || '';
+            const infoBox = document.getElementById('ret-ref-info-box');
+            const itemsBox = document.getElementById('ret-items-container');
+            if (!itemsBox) return;
+
+            const record = activeReturnType === 'sale'
+                ? (appState.sales || []).find(s => s.id === refId)
+                : (appState.purchases || []).find(p => p.id === refId);
+
+            if (!record) {
+                if (infoBox) infoBox.classList.add('hidden');
+                itemsBox.innerHTML = '<div class="text-center py-5 text-slate-400">Pilih nota/faktur terlebih dahulu untuk memuat daftar item.</div>';
+                recalcReturnTotal();
+                return;
+            }
+
+            if (infoBox) {
+                infoBox.classList.remove('hidden');
+                infoBox.innerHTML = `
+                    <div><strong>Pihak:</strong> ${activeReturnType === 'sale' ? (record.customerName || 'Umum') : (record.supplierName || '-')}</div>
+                    <div><strong>Tanggal Transaksi:</strong> ${formatDateTime(record.date)} • <strong>Metode:</strong> ${record.paymentMethod}</div>
+                `;
+            }
+
+            itemsBox.innerHTML = (record.items || []).map((it, idx) => `
+                <div class="flex items-center justify-between gap-2 bg-white p-2 rounded-lg border border-slate-200">
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-slate-900 truncate">${it.name}</div>
+                        <div class="text-[10px] text-slate-500">Beli/Jual: ${it.qty} ${it.unitLabel || it.unit || 'Pcs'} @ ${formatRupiah(it.price)}</div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <span class="text-[10px] font-bold text-slate-500">Qty Retur:</span>
+                        <input type="number" min="0" max="${it.qty}" value="0" data-idx="${idx}" data-price="${it.price}" oninput="recalcReturnTotal()" class="ret-item-qty w-16 px-2 py-1 rounded-lg border border-slate-300 text-center font-extrabold text-rose-700">
+                    </div>
+                </div>
+            `).join('');
+            recalcReturnTotal();
+        }
+
+        function recalcReturnTotal() {
+            let total = 0;
+            document.querySelectorAll('.ret-item-qty').forEach(inp => {
+                const qty = Math.max(0, Math.min(Number(inp.max) || 0, Number(inp.value) || 0));
+                const price = Number(inp.dataset.price) || 0;
+                total += qty * price;
+            });
+            const totEl = document.getElementById('ret-total-amount');
+            if (totEl) totEl.textContent = formatRupiah(total);
+            return total;
+        }
+
+        function processReturnSubmit() {
+            const refId = document.getElementById('ret-ref-select')?.value || '';
+            const record = activeReturnType === 'sale'
+                ? (appState.sales || []).find(s => s.id === refId)
+                : (appState.purchases || []).find(p => p.id === refId);
+            if (!record) {
+                showToast('Pilih nota/faktur referensi terlebih dahulu!', 'error');
+                return;
+            }
+            const reason = (document.getElementById('ret-reason')?.value || '').trim();
+            if (!reason) {
+                showToast('Masukkan alasan retur barang!', 'error');
+                return;
+            }
+
+            const returnedItems = [];
+            document.querySelectorAll('.ret-item-qty').forEach(inp => {
+                const idx = Number(inp.dataset.idx);
+                const qty = Math.max(0, Math.min(Number(inp.max) || 0, Number(inp.value) || 0));
+                if (qty > 0 && record.items[idx]) {
+                    const src = record.items[idx];
+                    returnedItems.push({
+                        productId: src.productId,
+                        name: src.name,
+                        qty,
+                        factor: Number(src.factor) || 1,
+                        price: Number(src.price) || 0
+                    });
+                }
+            });
+
+            if (returnedItems.length === 0) {
+                showToast('Isi minimal 1 barang dengan jumlah retur > 0!', 'error');
+                return;
+            }
+
+            const totalAmount = returnedItems.reduce((a, b) => a + (b.qty * b.price), 0);
+            const settlement = document.getElementById('ret-settlement-mode')?.value || 'cash';
+            const cashAccId = document.getElementById('ret-cash-account')?.value || '';
+            const cashAcc = (appState.cashAccounts || []).find(k => k.id === cashAccId);
+
+            returnedItems.forEach(it => {
+                const prod = (appState.products || []).find(p => p.id === it.productId);
+                if (prod) {
+                    const smallQty = it.qty * (it.factor || 1);
+                    if (activeReturnType === 'sale') {
+                        prod.stock = (Number(prod.stock) || 0) + smallQty;
+                    } else {
+                        prod.stock = Math.max(0, (Number(prod.stock) || 0) - smallQty);
+                    }
+                }
+            });
+
+            if (settlement === 'cash' && cashAcc) {
+                if (activeReturnType === 'sale') {
+                    cashAcc.balance = Math.max(0, (Number(cashAcc.balance) || 0) - totalAmount);
+                } else {
+                    cashAcc.balance = (Number(cashAcc.balance) || 0) + totalAmount;
+                }
+            } else if (settlement === 'debt') {
+                if (activeReturnType === 'sale' && record.customerId) {
+                    const cust = (appState.customers || []).find(c => c.id === record.customerId);
+                    if (cust) cust.receivable = Math.max(0, (Number(cust.receivable) || 0) - totalAmount);
+                } else if (activeReturnType === 'purchase' && record.supplierId) {
+                    const sup = (appState.suppliers || []).find(s => s.id === record.supplierId);
+                    if (sup) sup.payable = Math.max(0, (Number(sup.payable) || 0) - totalAmount);
+                }
+            }
+
+            const returnNo = 'RET-' + Date.now().toString().slice(-6);
+            appState.returns.unshift({
+                id: 'ret_' + Date.now(),
+                returnNo,
+                date: new Date().toISOString(),
+                type: activeReturnType,
+                refId: record.id,
+                refNo: activeReturnType === 'sale' ? record.invoiceNo : record.purchaseNo,
+                partyName: activeReturnType === 'sale' ? (record.customerName || 'Umum') : (record.supplierName || '-'),
+                items: returnedItems,
+                reason,
+                settlement,
+                totalAmount
+            });
+
+            document.getElementById('ret-reason').value = '';
+            saveState();
+            refreshAllViews();
+            showToast(`Retur ${returnNo} berhasil diproses!`);
+        }
+
+        function renderReturnsHistory() {
+            const tbody = document.getElementById('ret-history-tbody');
+            if (!tbody || !appState) return;
+            const filterType = document.getElementById('ret-history-filter-type')?.value || 'ALL';
+            const q = (document.getElementById('ret-history-search')?.value || '').trim().toLowerCase();
+
+            const list = (appState.returns || []).filter(r => {
+                if (filterType !== 'ALL' && r.type !== filterType) return false;
+                if (q && !(r.returnNo || '').toLowerCase().includes(q) && !(r.refNo || '').toLowerCase().includes(q) && !(r.partyName || '').toLowerCase().includes(q)) return false;
+                return true;
+            });
+
+            tbody.innerHTML = list.map(r => `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-3 font-mono font-bold text-rose-700">${r.returnNo || r.id}</td>
+                    <td class="py-3 px-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.type === 'sale' ? 'bg-indigo-50 text-indigo-700' : 'bg-amber-50 text-amber-800'}">${r.type === 'sale' ? 'Retur Jual' : 'Retur Beli'}</span>
+                        <div class="text-[10px] font-mono text-slate-500 mt-0.5">${r.refNo || '-'}</div>
+                    </td>
+                    <td class="py-3 px-3 font-bold text-slate-900">${r.partyName || '-'}</td>
+                    <td class="py-3 px-3 text-slate-600">${(r.items || []).map(i => `${i.name} (${i.qty})`).join(', ')}<div class="text-[10px] text-slate-400">Alasan: ${r.reason || '-'}</div></td>
+                    <td class="py-3 px-3 text-right font-extrabold text-rose-700">${formatRupiah(r.totalAmount)}</td>
+                    <td class="py-3 px-3 text-center text-[10px] text-slate-500">${formatDateTime(r.date)}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="6" class="text-center py-8 text-slate-400">Belum ada riwayat retur barang.</td></tr>';
+        }
+
+        // ==================== PEMBAYARAN PIUTANG PELANGGAN ====================
+        function renderReceivablesPage() {
+            if (!appState) return;
+            const custFilterSel = document.getElementById('rec-page-customer-filter');
+            if (custFilterSel) {
+                const prev = custFilterSel.value;
+                custFilterSel.innerHTML = '<option value="">Semua Pelanggan</option>' +
+                    (appState.customers || []).map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                custFilterSel.value = prev;
+            }
+            const custFilter = custFilterSel?.value || '';
+            const q = (document.getElementById('rec-page-search-input')?.value || '').trim().toLowerCase();
+
+            const debtors = (appState.customers || []).filter(c => {
+                if (custFilter && c.id !== custFilter) return false;
+                if (q && !(c.name || '').toLowerCase().includes(q) && !(c.phone || '').toLowerCase().includes(q)) return false;
+                return (Number(c.receivable) || 0) > 0;
+            });
+
+            const totalDue = debtors.reduce((a, c) => a + (Number(c.receivable) || 0), 0);
+            const totalPaid = (appState.receivablePayments || []).reduce((a, p) => a + (Number(p.amount) || 0), 0);
+
+            if (document.getElementById('rec-page-total-due')) document.getElementById('rec-page-total-due').textContent = formatRupiah(totalDue);
+            if (document.getElementById('rec-page-cust-count')) document.getElementById('rec-page-cust-count').textContent = `${debtors.length} Pelanggan`;
+            if (document.getElementById('rec-page-total-paid')) document.getElementById('rec-page-total-paid').textContent = formatRupiah(totalPaid);
+
+            const custTbody = document.getElementById('rec-page-customers-tbody');
+            if (custTbody) {
+                custTbody.innerHTML = debtors.map(c => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-3.5 font-bold text-slate-900">${c.name}</td>
+                        <td class="py-3 px-3.5">${c.category || 'Toko'}</td>
+                        <td class="py-3 px-3.5">${c.phone || '-'}</td>
+                        <td class="py-3 px-3.5 text-right font-extrabold text-rose-700">${formatRupiah(c.receivable)}</td>
+                        <td class="py-3 px-3.5 text-center">
+                            <button type="button" onclick="openPayReceivableModal('${c.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px]">Bayar / Cicil</button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" class="text-center py-8 text-slate-400">Tidak ada pelanggan dengan piutang aktif.</td></tr>';
+            }
+
+            const invTbody = document.getElementById('rec-page-invoices-tbody');
+            if (invTbody) {
+                const unpaidSales = (appState.sales || []).filter(s => (Number(s.dueAmount) || 0) > 0 && (!custFilter || s.customerId === custFilter));
+                invTbody.innerHTML = unpaidSales.map(s => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-2.5 px-3.5 font-mono font-bold text-indigo-700">${s.invoiceNo}</td>
+                        <td class="py-2.5 px-3.5">${formatDateTime(s.date)}</td>
+                        <td class="py-2.5 px-3.5 font-bold">${s.customerName || '-'}</td>
+                        <td class="py-2.5 px-3.5 text-right">${formatRupiah(s.grandTotal)}</td>
+                        <td class="py-2.5 px-3.5 text-right text-emerald-700 font-bold">${formatRupiah(s.paidAmount || 0)}</td>
+                        <td class="py-2.5 px-3.5 text-right text-rose-700 font-extrabold">${formatRupiah(s.dueAmount)}</td>
+                        <td class="py-2.5 px-3.5 text-center">
+                            <button type="button" onclick="openPayReceivableModal('${s.customerId}', '${s.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold text-[10px]">Cicil Nota</button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="7" class="text-center py-6 text-slate-400">Tidak ada nota piutang tertunggak.</td></tr>';
+            }
+
+            const histTbody = document.getElementById('receivable-history-tbody');
+            if (histTbody) {
+                histTbody.innerHTML = (appState.receivablePayments || []).slice(0, 25).map(p => `
+                    <tr>
+                        <td class="py-2.5 px-3.5 text-slate-500">${formatDateTime(p.date)}</td>
+                        <td class="py-2.5 px-3.5 font-bold">${p.customerName}</td>
+                        <td class="py-2.5 px-3.5">${p.cashAccountName || '-'}</td>
+                        <td class="py-2.5 px-3.5">${p.note || '-'}</td>
+                        <td class="py-2.5 px-3.5 text-right font-extrabold text-emerald-700">${formatRupiah(p.amount)}</td>
+                        <td class="py-2.5 px-3.5 text-right font-bold text-rose-700">${formatRupiah(p.remainingAfter)}</td>
+                    </tr>
+                `).join('') || '<tr><td colspan="6" class="text-center py-6 text-slate-400">Belum ada riwayat cicilan piutang.</td></tr>';
+            }
+        }
+
+        function openPayReceivableModal(custId, saleId = '') {
+            const cust = (appState.customers || []).find(c => c.id === custId);
+            if (!cust) return;
+            const sale = saleId ? (appState.sales || []).find(s => s.id === saleId) : null;
+            const rawBal = sale ? Math.max(0, Number(sale.dueAmount) || 0) : Math.max(0, Number(cust.receivable) || 0);
+
+            document.getElementById('pay-rec-cust-id').value = cust.id;
+            document.getElementById('pay-rec-sale-id').value = sale ? sale.id : '';
+            document.getElementById('pay-rec-raw-balance').value = rawBal;
+            document.getElementById('pay-rec-cust-name').textContent = cust.name;
+            const invLbl = document.getElementById('pay-rec-invoice-label');
+            if (invLbl) {
+                invLbl.textContent = sale ? `Nota: ${sale.invoiceNo}` : '';
+                invLbl.classList.toggle('hidden', !sale);
+            }
+            document.getElementById('pay-rec-current').textContent = formatRupiah(rawBal);
+            document.getElementById('pay-rec-amount').value = rawBal.toLocaleString('id-ID');
+            document.getElementById('pay-rec-remaining').textContent = 'Rp 0';
+            document.getElementById('pay-rec-note').value = '';
+
+            const cashSel = document.getElementById('pay-rec-cash-account');
+            if (cashSel) {
+                cashSel.innerHTML = (appState.cashAccounts || []).map(k => `<option value="${k.id}">${k.name} (${formatRupiah(k.balance)})</option>`).join('');
+            }
+            openModal('modal-pay-receivable');
+        }
+
+        function setReceivableInstallmentPreset(ratio) {
+            const rawBal = Number(document.getElementById('pay-rec-raw-balance')?.value) || 0;
+            const amt = Math.round(rawBal * ratio);
+            const inp = document.getElementById('pay-rec-amount');
+            if (inp) {
+                inp.value = amt.toLocaleString('id-ID');
+                handlePayReceivableInput(inp);
+            }
+        }
+
+        function handlePayReceivableInput(el) {
+            const rawBal = Number(document.getElementById('pay-rec-raw-balance')?.value) || 0;
+            const val = Math.max(0, Math.min(rawBal, parseNumericValue(el.value)));
+            el.value = val ? val.toLocaleString('id-ID') : '';
+            document.getElementById('pay-rec-remaining').textContent = formatRupiah(Math.max(0, rawBal - val));
+        }
+
+        function handlePayReceivableSubmit(e) {
+            e.preventDefault();
+            const custId = document.getElementById('pay-rec-cust-id').value;
+            const saleId = document.getElementById('pay-rec-sale-id').value;
+            const cust = (appState.customers || []).find(c => c.id === custId);
+            if (!cust) return;
+            const rawBal = Number(document.getElementById('pay-rec-raw-balance').value) || 0;
+            const amount = Math.max(1, Math.min(rawBal, parseNumericValue(document.getElementById('pay-rec-amount').value)));
+            const cashAccId = document.getElementById('pay-rec-cash-account').value;
+            const cashAcc = (appState.cashAccounts || []).find(k => k.id === cashAccId);
+            const note = document.getElementById('pay-rec-note').value.trim();
+
+            cust.receivable = Math.max(0, (Number(cust.receivable) || 0) - amount);
+            if (saleId) {
+                const sale = (appState.sales || []).find(s => s.id === saleId);
+                if (sale) {
+                    sale.paidAmount = (Number(sale.paidAmount) || 0) + amount;
+                    sale.dueAmount = Math.max(0, (Number(sale.dueAmount) || 0) - amount);
+                }
+            }
+            if (cashAcc) {
+                cashAcc.balance = (Number(cashAcc.balance) || 0) + amount;
+                appState.cashMutations.unshift({
+                    id: 'mut_' + Date.now(),
+                    date: new Date().toISOString(),
+                    accountId: cashAcc.id,
+                    accountName: cashAcc.name,
+                    type: 'IN',
+                    amount,
+                    description: `Cicilan piutang: ${cust.name}`
+                });
+            }
+            appState.receivablePayments.unshift({
+                id: 'recpay_' + Date.now(),
+                date: new Date().toISOString(),
+                customerId: cust.id,
+                customerName: cust.name,
+                saleId,
+                cashAccountId: cashAcc ? cashAcc.id : '',
+                cashAccountName: cashAcc ? cashAcc.name : '',
+                amount,
+                remainingAfter: cust.receivable,
+                note
+            });
+
+            saveState();
+            closeModal('modal-pay-receivable');
+            refreshAllViews();
+            showToast('Pembayaran cicilan piutang berhasil dicatat!');
+        }
+
+        // ==================== PEMBAYARAN HUTANG SUPPLIER ====================
+        function renderPayablesPage() {
+            if (!appState) return;
+            const supFilterSel = document.getElementById('pay-page-supplier-filter');
+            if (supFilterSel) {
+                const prev = supFilterSel.value;
+                supFilterSel.innerHTML = '<option value="">Semua Supplier</option>' +
+                    (appState.suppliers || []).map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+                supFilterSel.value = prev;
+            }
+            const supFilter = supFilterSel?.value || '';
+            const q = (document.getElementById('pay-page-search-input')?.value || '').trim().toLowerCase();
+
+            const creditors = (appState.suppliers || []).filter(s => {
+                if (supFilter && s.id !== supFilter) return false;
+                if (q && !(s.name || '').toLowerCase().includes(q) && !(s.code || '').toLowerCase().includes(q)) return false;
+                return (Number(s.payable) || 0) > 0;
+            });
+
+            const totalDue = creditors.reduce((a, s) => a + (Number(s.payable) || 0), 0);
+            const totalPaid = (appState.supplierPayments || []).reduce((a, p) => a + (Number(p.amount) || 0), 0);
+
+            if (document.getElementById('pay-page-total-due')) document.getElementById('pay-page-total-due').textContent = formatRupiah(totalDue);
+            if (document.getElementById('pay-page-sup-count')) document.getElementById('pay-page-sup-count').textContent = `${creditors.length} Supplier`;
+            if (document.getElementById('pay-page-total-paid')) document.getElementById('pay-page-total-paid').textContent = formatRupiah(totalPaid);
+
+            const supTbody = document.getElementById('pay-page-suppliers-tbody');
+            if (supTbody) {
+                supTbody.innerHTML = creditors.map(s => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-3.5 font-mono font-bold">${s.code}</td>
+                        <td class="py-3 px-3.5 font-bold text-slate-900">${s.name}</td>
+                        <td class="py-3 px-3.5">${s.contact || '-'} • ${s.phone || '-'}</td>
+                        <td class="py-3 px-3.5 text-right font-extrabold text-rose-700">${formatRupiah(s.payable)}</td>
+                        <td class="py-3 px-3.5 text-center">
+                            <button type="button" onclick="openPayPayableModal('${s.id}')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px]">Bayar Hutang</button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" class="text-center py-8 text-slate-400">Tidak ada saldo hutang ke supplier.</td></tr>';
+            }
+
+            const invTbody = document.getElementById('pay-page-invoices-tbody');
+            if (invTbody) {
+                const unpaidPurchases = (appState.purchases || []).filter(p => (Number(p.dueAmount) || 0) > 0 && (!supFilter || p.supplierId === supFilter));
+                invTbody.innerHTML = unpaidPurchases.map(p => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-2.5 px-3.5 font-mono font-bold text-indigo-700">${p.purchaseNo}</td>
+                        <td class="py-2.5 px-3.5">${formatDateTime(p.date)}</td>
+                        <td class="py-2.5 px-3.5 font-bold">${p.supplierName || '-'}</td>
+                        <td class="py-2.5 px-3.5 text-right">${formatRupiah(p.grandTotal)}</td>
+                        <td class="py-2.5 px-3.5 text-right text-emerald-700 font-bold">${formatRupiah(p.paidAmount || 0)}</td>
+                        <td class="py-2.5 px-3.5 text-right text-rose-700 font-extrabold">${formatRupiah(p.dueAmount)}</td>
+                        <td class="py-2.5 px-3.5 text-center">
+                            <button type="button" onclick="openPayPayableModal('${p.supplierId}', '${p.id}')" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold text-[10px]">Bayar Faktur</button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="7" class="text-center py-6 text-slate-400">Tidak ada faktur pembelian tempo tertunggak.</td></tr>';
+            }
+
+            const histTbody = document.getElementById('payable-history-tbody');
+            if (histTbody) {
+                histTbody.innerHTML = (appState.supplierPayments || []).slice(0, 25).map(p => `
+                    <tr>
+                        <td class="py-2.5 px-3.5 text-slate-500">${formatDateTime(p.date)}</td>
+                        <td class="py-2.5 px-3.5 font-bold">${p.supplierName}</td>
+                        <td class="py-2.5 px-3.5">${p.cashAccountName || '-'}</td>
+                        <td class="py-2.5 px-3.5">${p.note || '-'}</td>
+                        <td class="py-2.5 px-3.5 text-right font-extrabold text-indigo-700">${formatRupiah(p.amount)}</td>
+                        <td class="py-2.5 px-3.5 text-right font-bold text-rose-700">${formatRupiah(p.remainingAfter)}</td>
+                    </tr>
+                `).join('') || '<tr><td colspan="6" class="text-center py-6 text-slate-400">Belum ada riwayat pembayaran hutang supplier.</td></tr>';
+            }
+        }
+
+        function openPayPayableModal(supId, purchaseId = '') {
+            const sup = (appState.suppliers || []).find(s => s.id === supId);
+            if (!sup) return;
+            const pur = purchaseId ? (appState.purchases || []).find(p => p.id === purchaseId) : null;
+            const rawBal = pur ? Math.max(0, Number(pur.dueAmount) || 0) : Math.max(0, Number(sup.payable) || 0);
+
+            document.getElementById('pay-sup-id').value = sup.id;
+            document.getElementById('pay-sup-purchase-id').value = pur ? pur.id : '';
+            document.getElementById('pay-sup-raw-balance').value = rawBal;
+            document.getElementById('pay-sup-name').textContent = sup.name;
+            const invLbl = document.getElementById('pay-sup-invoice-label');
+            if (invLbl) {
+                invLbl.textContent = pur ? `Faktur: ${pur.purchaseNo}` : '';
+                invLbl.classList.toggle('hidden', !pur);
+            }
+            document.getElementById('pay-sup-current').textContent = formatRupiah(rawBal);
+            document.getElementById('pay-sup-amount').value = rawBal.toLocaleString('id-ID');
+            document.getElementById('pay-sup-remaining').textContent = 'Rp 0';
+            document.getElementById('pay-sup-note').value = '';
+
+            const cashSel = document.getElementById('pay-sup-cash-account');
+            if (cashSel) {
+                cashSel.innerHTML = (appState.cashAccounts || []).map(k => `<option value="${k.id}">${k.name} (${formatRupiah(k.balance)})</option>`).join('');
+            }
+            openModal('modal-pay-payable');
+        }
+
+        function setPayableInstallmentPreset(ratio) {
+            const rawBal = Number(document.getElementById('pay-sup-raw-balance')?.value) || 0;
+            const amt = Math.round(rawBal * ratio);
+            const inp = document.getElementById('pay-sup-amount');
+            if (inp) {
+                inp.value = amt.toLocaleString('id-ID');
+                handlePayPayableInput(inp);
+            }
+        }
+
+        function handlePayPayableInput(el) {
+            const rawBal = Number(document.getElementById('pay-sup-raw-balance')?.value) || 0;
+            const val = Math.max(0, Math.min(rawBal, parseNumericValue(el.value)));
+            el.value = val ? val.toLocaleString('id-ID') : '';
+            document.getElementById('pay-sup-remaining').textContent = formatRupiah(Math.max(0, rawBal - val));
+        }
+
+        function handlePayPayableSubmit(e) {
+            e.preventDefault();
+            const supId = document.getElementById('pay-sup-id').value;
+            const purchaseId = document.getElementById('pay-sup-purchase-id').value;
+            const sup = (appState.suppliers || []).find(s => s.id === supId);
+            if (!sup) return;
+            const rawBal = Number(document.getElementById('pay-sup-raw-balance').value) || 0;
+            const amount = Math.max(1, Math.min(rawBal, parseNumericValue(document.getElementById('pay-sup-amount').value)));
+            const cashAccId = document.getElementById('pay-sup-cash-account').value;
+            const cashAcc = (appState.cashAccounts || []).find(k => k.id === cashAccId);
+            const note = document.getElementById('pay-sup-note').value.trim();
+
+            sup.payable = Math.max(0, (Number(sup.payable) || 0) - amount);
+            if (purchaseId) {
+                const pur = (appState.purchases || []).find(p => p.id === purchaseId);
+                if (pur) {
+                    pur.paidAmount = (Number(pur.paidAmount) || 0) + amount;
+                    pur.dueAmount = Math.max(0, (Number(pur.dueAmount) || 0) - amount);
+                }
+            }
+            if (cashAcc) {
+                cashAcc.balance = Math.max(0, (Number(cashAcc.balance) || 0) - amount);
+                appState.cashMutations.unshift({
+                    id: 'mut_' + Date.now(),
+                    date: new Date().toISOString(),
+                    accountId: cashAcc.id,
+                    accountName: cashAcc.name,
+                    type: 'OUT',
+                    amount,
+                    description: `Bayar hutang supplier: ${sup.name}`
+                });
+            }
+            appState.supplierPayments.unshift({
+                id: 'suppay_' + Date.now(),
+                date: new Date().toISOString(),
+                supplierId: sup.id,
+                supplierName: sup.name,
+                purchaseId,
+                cashAccountId: cashAcc ? cashAcc.id : '',
+                cashAccountName: cashAcc ? cashAcc.name : '',
+                amount,
+                remainingAfter: sup.payable,
+                note
+            });
+
+            saveState();
+            closeModal('modal-pay-payable');
+            refreshAllViews();
+            showToast('Pembayaran hutang supplier berhasil dicatat!');
+        }
+
+        // ==================== REMOVE / PEMBERSIHAN TRANSAKSI ====================
+        function populateRemoveYearOptions() {
+            const yearSel = document.getElementById('remove-filter-year');
+            if (!yearSel || !appState) return;
+            const prev = yearSel.value;
+            const years = new Set([String(new Date().getFullYear())]);
+            (appState.sales || []).forEach(s => years.add(String(s.date || '').slice(0, 4)));
+            (appState.purchases || []).forEach(p => years.add(String(p.date || '').slice(0, 4)));
+            (appState.services || []).forEach(s => years.add(String(s.createdAt || '').slice(0, 4)));
+            const sortedYears = Array.from(years).filter(y => /^\d{4}$/.test(y)).sort().reverse();
+            yearSel.innerHTML = '<option value="ALL">Semua Tahun (Awal s/d Akhir)</option>' +
+                sortedYears.map(y => `<option value="${y}">${y}</option>`).join('');
+            if (prev && Array.from(yearSel.options).some(o => o.value === prev)) yearSel.value = prev;
+        }
+
+        function matchRemovePeriod(iso) {
+            const year = document.getElementById('remove-filter-year')?.value || 'ALL';
+            const month = document.getElementById('remove-filter-month')?.value || 'ALL';
+            const dateStr = String(iso || '');
+            if (year !== 'ALL' && dateStr.slice(0, 4) !== year) return false;
+            if (month !== 'ALL' && dateStr.slice(5, 7) !== month) return false;
+            return true;
+        }
+
+        function toggleAllRemoveCheckboxes(checked) {
+            document.querySelectorAll('.rem-cat-chk').forEach(chk => {
+                chk.checked = checked;
+            });
+            renderRemoveSummary();
+        }
+
+        function renderRemoveSummary() {
+            if (!appState) return;
+            populateRemoveYearOptions();
+
+            const lunasSales = (appState.sales || []).filter(s => (Number(s.dueAmount) || 0) <= 0 && matchRemovePeriod(s.date));
+            const unpaidSales = (appState.sales || []).filter(s => (Number(s.dueAmount) || 0) > 0);
+            const lunasPurchases = (appState.purchases || []).filter(p => (Number(p.dueAmount) || 0) <= 0 && matchRemovePeriod(p.date));
+            const unpaidPurchases = (appState.purchases || []).filter(p => (Number(p.dueAmount) || 0) > 0);
+            const matchedReturns = (appState.returns || []).filter(r => matchRemovePeriod(r.date));
+            const lunasServices = (appState.services || []).filter(s => s.isPaid && matchRemovePeriod(s.createdAt));
+            const unpaidServices = (appState.services || []).filter(s => !s.isPaid);
+            const matchedCashMut = (appState.cashMutations || []).filter(m => matchRemovePeriod(m.date));
+
+            if (document.getElementById('rem-count-pos')) document.getElementById('rem-count-pos').textContent = lunasSales.length;
+            if (document.getElementById('rem-count-purchases')) document.getElementById('rem-count-purchases').textContent = lunasPurchases.length + matchedReturns.length;
+            if (document.getElementById('rem-count-service')) document.getElementById('rem-count-service').textContent = lunasServices.length;
+            if (document.getElementById('rem-count-cash')) document.getElementById('rem-count-cash').textContent = matchedCashMut.length;
+
+            let deletableCount = 0;
+            if (document.getElementById('rem-chk-pos')?.checked) deletableCount += lunasSales.length;
+            if (document.getElementById('rem-chk-purchases')?.checked) deletableCount += (lunasPurchases.length + matchedReturns.length);
+            if (document.getElementById('rem-chk-service')?.checked) deletableCount += lunasServices.length;
+            if (document.getElementById('rem-chk-cash')?.checked) deletableCount += matchedCashMut.length;
+
+            const protectedCount = unpaidSales.length + unpaidPurchases.length + unpaidServices.length;
+            const totalPiutang = (appState.customers || []).reduce((a, c) => a + (Number(c.receivable) || 0), 0);
+
+            if (document.getElementById('rem-stat-deletable')) document.getElementById('rem-stat-deletable').textContent = `${deletableCount} Data`;
+            if (document.getElementById('rem-stat-protected')) document.getElementById('rem-stat-protected').textContent = `${protectedCount} Transaksi`;
+            if (document.getElementById('rem-stat-piutang-awal')) document.getElementById('rem-stat-piutang-awal').textContent = formatRupiah(totalPiutang);
+            if (document.getElementById('rem-master-prod-count')) document.getElementById('rem-master-prod-count').textContent = (appState.products || []).length;
+            if (document.getElementById('rem-master-cust-count')) document.getElementById('rem-master-cust-count').textContent = (appState.customers || []).length;
+        }
+
+        function confirmRemoveSelected() {
+            openDeleteWarningModal({
+                title: 'Hapus Transaksi Tercentang?',
+                desc: 'Seluruh data transaksi lunas pada kategori & periode yang dipilih akan dihapus permanen.',
+                onConfirm: () => {
+                    if (document.getElementById('rem-chk-pos')?.checked) {
+                        appState.sales = (appState.sales || []).filter(s => !((Number(s.dueAmount) || 0) <= 0 && matchRemovePeriod(s.date)));
+                    }
+                    if (document.getElementById('rem-chk-purchases')?.checked) {
+                        appState.purchases = (appState.purchases || []).filter(p => !((Number(p.dueAmount) || 0) <= 0 && matchRemovePeriod(p.date)));
+                        appState.returns = (appState.returns || []).filter(r => !matchRemovePeriod(r.date));
+                    }
+                    if (document.getElementById('rem-chk-service')?.checked) {
+                        appState.services = (appState.services || []).filter(s => !(s.isPaid && matchRemovePeriod(s.createdAt)));
+                    }
+                    if (document.getElementById('rem-chk-cash')?.checked) {
+                        appState.cashMutations = (appState.cashMutations || []).filter(m => !matchRemovePeriod(m.date));
+                    }
+                    saveState();
+                    refreshAllViews();
+                    showToast('Data transaksi terpilih berhasil dibersihkan!');
+                }
+            });
+        }
+
+        function confirmRemoveAllTransactions() {
+            openDeleteWarningModal({
+                title: 'Remove All Transaksi (Awal s/d Akhir)?',
+                desc: 'Semua riwayat penjualan lunas, pembelian lunas, retur, service lunas, dan mutasi kas akan dihapus. Transaksi belum lunas & master data tetap aman.',
+                onConfirm: () => {
+                    appState.sales = (appState.sales || []).filter(s => (Number(s.dueAmount) || 0) > 0);
+                    appState.purchases = (appState.purchases || []).filter(p => (Number(p.dueAmount) || 0) > 0);
+                    appState.returns = [];
+                    appState.services = (appState.services || []).filter(s => !s.isPaid);
+                    appState.cashMutations = [];
+                    saveState();
+                    refreshAllViews();
+                    showToast('Semua riwayat transaksi lunas berhasil dibersihkan!');
+                }
+            });
+        }
+
+        // ==================== CENTRAL VIEW REFRESH ====================
         function refreshAllViews() {
-            renderDashboard();
-            populatePOSSelectors();
-            renderPOSProducts();
-            renderPOSCart();
-            renderSalesHistory();
-            renderPurchasesSelectors();
-            renderPurchaseCart();
-            renderPurchasesHistory();
-            renderActiveServicesTable();
-            renderServiceHistoryTable();
-            renderProductsTable();
-            renderSuppliersTable();
-            renderCustomersTable();
-            renderCashPage();
-            renderEmployeesAndRoles();
-            renderReports();
+            if (!appState) return;
+            try { renderDashboard(); } catch (e) { console.error(e); }
+            try { populatePOSSelectors(); } catch (e) { console.error(e); }
+            try { renderPOSProducts(); } catch (e) { console.error(e); }
+            try { renderPOSCart(); } catch (e) { console.error(e); }
+            try { renderSalesHistory(); } catch (e) { console.error(e); }
+            try { renderPurchasesSelectors(); } catch (e) { console.error(e); }
+            try { renderPurchaseCart(); } catch (e) { console.error(e); }
+            try { renderPurchasesHistory(); } catch (e) { console.error(e); }
+            try { populateReturnSelectors(); } catch (e) { console.error(e); }
+            try { renderReturnsHistory(); } catch (e) { console.error(e); }
+            try { renderActiveServicesTable(); } catch (e) { console.error(e); }
+            try { renderServiceHistoryTable(); } catch (e) { console.error(e); }
+            try { renderProductsTable(); } catch (e) { console.error(e); }
+            try { renderSuppliersTable(); } catch (e) { console.error(e); }
+            try { renderCustomersTable(); } catch (e) { console.error(e); }
+            try { renderReceivablesPage(); } catch (e) { console.error(e); }
+            try { renderPayablesPage(); } catch (e) { console.error(e); }
+            try { renderCashPage(); } catch (e) { console.error(e); }
+            try { renderEmployeesAndRoles(); } catch (e) { console.error(e); }
+            try { renderReports(); } catch (e) { console.error(e); }
+            try { renderRemoveSummary(); } catch (e) { console.error(e); }
         }
 
         // ==================== INITIALIZATION ====================
@@ -4942,6 +6202,7 @@
             loadLocalState();
             populateLoginEmployeeSelect();
             updateStoreBrandingUI();
+            refreshAllViews();
             updatePOSRealtimeClock();
             setInterval(updatePOSRealtimeClock, 1000);
             if (window.lucide) lucide.createIcons();
